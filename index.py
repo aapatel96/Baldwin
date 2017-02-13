@@ -21,12 +21,19 @@ import requests
 import PyPDF2
 import nltk
 
+
+users = []
 segments = []
 dueDates = []
 
 class user:
-    def __init__(self):
+    def __init__(self,chat_id):
         self.segments = []
+        self.chat_id = chat_id
+    def addSegments(self,list):
+        for i in list:
+            self.segments.append(i)
+
 
     
     
@@ -66,8 +73,8 @@ logger = logging.getLogger(__name__)
 # update. Error handlers also receive the raised TelegramError object in error.
 def start(bot, update):
     update.message.reply_text('Hi!')
-
-
+    users.append(user(update.message.from_user.id))   
+    
 def help(bot, update):
     update.message.reply_text('Help!')
 
