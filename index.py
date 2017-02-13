@@ -24,6 +24,13 @@ import nltk
 segments = []
 dueDates = []
 
+class user:
+    def __init__(self):
+        self.segments = []
+
+    
+    
+
 def split(string): 
     count = 0
     indexList=[]
@@ -122,32 +129,6 @@ def splitX(bot,update):
     update.message.reply_text(pageObj.extractText())
 
 
-    
-def alarm(bot, job):
-    """Function to send the alarm message"""
-    bot.sendMessage(job.context, text=segments[0])
-    del segments[0]
-    
-def newReading(bot,update, args, job_queue):
-    """Adds a job to the queue"""
-    chat_id = update.message.chat_id
-    try:
-        # args[0] should contain the time for the timer in seconds
-        # due = args[0]
-
-
-        reading = str(args[0]).encode("utf-8")
-        split(reading)
-        # Add job to queue
-        job = Job(alarm, reading, repeat=False, context=chat_id)
-        timers[chat_id] = job
-        job_queue.put(job)
-
-        update.message.reply_text('Timer successfully set!')
-
-    except (IndexError, ValueError):
-        update.message.reply_text('Usage: /new <reading>')
-
  
 def error(bot, update, error):
     logger.warn('Update "%s" caused error "%s"' % (update, error))
@@ -161,7 +142,6 @@ def main():
     dp = updater.dispatcher
 
     # on different commands - answer in Telegram
-    dp.add_handler(CommandHandler("new",newReading))
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("help", help))
 
