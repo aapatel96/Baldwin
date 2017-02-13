@@ -79,9 +79,9 @@ def help(bot, update):
     update.message.reply_text('Help!')
 
 def splitMessage(bot, update):
-    y = update.message.text.encode('utf-8')
-    if y[0:4] == "http":
-        webpage = urllib2.urlopen(y)
+    message_text = update.message.text.encode('utf-8')
+    if message_text[0:4] == "http":
+        webpage = urllib2.urlopen(message_text)
         html = webpage.read()
         soup = BeautifulSoup(html, 'html.parser')
         for script in soup(["script", "style"]):
@@ -95,7 +95,7 @@ def splitMessage(bot, update):
         chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
         # drop blank lines
         text = '\n'.join(chunk for chunk in chunks if chunk)
-        user = find(update.message.from_user.id)
+        userfind = find(update.message.from_user.id)
         split(text)
         update.message.reply_text("Webpage Read. Press n to flip through pages")
         return
@@ -109,7 +109,7 @@ def splitMessage(bot, update):
         return
     '''
         
-    if update.message.text == "n" or update.message.text == "N":
+    if message_text == "n" or message_text == "N":
         if not segments:
             update.message.reply_text("Nothing to show")
             return
@@ -121,7 +121,8 @@ def splitMessage(bot, update):
 
     else:      
         ##del segments[:]
-        split(y)
+        user = find(update.message.from_user.id)
+        split(text)
         for i in segments:
             i.translate(None,"\n")
         update.message.reply_text("Message read. Press n to flip through pages")
