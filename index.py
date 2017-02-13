@@ -28,31 +28,48 @@ class user:
     def __init__(self):
         self.segments = []
 
-    
-    
+def find_user(users, user_id):
+    """
+    Returns the user object with given user_id
 
-def split(string): 
-    count = 0
-    indexList=[]
-    prevIndex = 0
-    for i in range(len(string)):
-        if string[i] == '.':
-            count = count + 1
-            ##print count
-            if count%2 == 0:
-                indexList.append(i)
-                strInd = str(i)
-                ##print "cut at "+ strInd
-                
-    for i in indexList:
-        segments.append(string[prevIndex:i+1])
-        prevIndex = i+1
+    Args:
+         users:   The list of user instances to search through.
+         user_id: The ID of the user to find.
 
-    return segments
-                   
+    Returns:
+            The 'user' object with user_id.
+    """
+    for i in range(len(users)):
+        if users[i].user_id == user_id:
+            return users[i]
 
+    return None
 
+def split_reading(reading, output): 
+    """
+    Splits a given reading into chunks of 2 sentences.
 
+    Args:
+         string: The string to chunkify.
+         output: The list to store the chunks in.
+                  Assumes len(output) == 0.
+    Returns:
+         output
+    """
+    sentences = reading.split(".")
+
+    # Jump by 2 sentences and merge 2 sentences at a time.
+    for i in xrange(0, len(sentences), 2):
+        # If odd number of sentences and at last one,
+        # keep in place.
+        if i == len(sentences) - 1:
+            output.append(sentences[i])
+            return
+
+        # concat 2 sentences and save into array.
+        output.append(sentences[i] + ". " + sentences[i+1] + ".")
+
+    return output
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -89,7 +106,7 @@ def splitMessage(bot, update):
         # drop blank lines
         text = '\n'.join(chunk for chunk in chunks if chunk)
         
-        split(text)
+        split_reading(text, segments)
         update.message.reply_text("Webpage Read. Press n to flip through pages")
         return
     '''
@@ -114,7 +131,7 @@ def splitMessage(bot, update):
 
     else:      
         ##del segments[:]
-        split(y)
+        split_reading(y, segments)
         for i in segments:
             i.translate(None,"\n")
         update.message.reply_text("Message read. Press n to flip through pages")
