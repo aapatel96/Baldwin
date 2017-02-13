@@ -21,12 +21,19 @@ import requests
 import PyPDF2
 import nltk
 
+
+users = []
 segments = []
 dueDates = []
 
 class user:
-    def __init__(self):
+    def __init__(self,user_id):
         self.segments = []
+        self.user_id = user_id
+    def addSegments(self,list):
+        for i in list:
+            self.segments.append(i)
+
 
 def find_user(users, user_id):
     """
@@ -83,15 +90,15 @@ logger = logging.getLogger(__name__)
 # update. Error handlers also receive the raised TelegramError object in error.
 def start(bot, update):
     update.message.reply_text('Hi!')
-
-
+    users.append(user(update.message.from_user.id))   
+    
 def help(bot, update):
     update.message.reply_text('Help!')
 
 def splitMessage(bot, update):
-    y = update.message.text.encode('utf-8')
-    if y[0:4] == "http":
-        webpage = urllib2.urlopen(y)
+    message_text = update.message.text.encode('utf-8')
+    if message_text[0:4] == "http":
+        webpage = urllib2.urlopen(message_text)
         html = webpage.read()
         soup = BeautifulSoup(html, 'html.parser')
         for script in soup(["script", "style"]):
@@ -106,7 +113,9 @@ def splitMessage(bot, update):
         # drop blank lines
         text = '\n'.join(chunk for chunk in chunks if chunk)
         
-        split_reading(text, segments)
+        userfind = find_user(update.message.from_user.id)
+        split_reading(text, userfind.segments)
+
         update.message.reply_text("Webpage Read. Press n to flip through pages")
         return
     '''
@@ -119,7 +128,7 @@ def splitMessage(bot, update):
         return
     '''
         
-    if update.message.text == "n" or update.message.text == "N":
+    if message_text == "n" or message_text == "N":
         if not segments:
             update.message.reply_text("Nothing to show")
             return
@@ -131,7 +140,11 @@ def splitMessage(bot, update):
 
     else:      
         ##del segments[:]
+        user = find(update.message.from_user.id)
         split_reading(y, segments)
+        
+
+
         for i in segments:
             i.translate(None,"\n")
         update.message.reply_text("Message read. Press n to flip through pages")
