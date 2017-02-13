@@ -113,7 +113,10 @@ def splitMessage(bot, update):
         # drop blank lines
         text = '\n'.join(chunk for chunk in chunks if chunk)
         
-        userfind = find_user(update.message.from_user.id)
+        userfind = find_user(users,update.message.from_user.id)
+        if userfind == None:
+            update.message.reply_text("Please type /start and then resend url/text")
+            return
         split_reading(text, userfind.segments)
 
         update.message.reply_text("Webpage Read. Press n to flip through pages")
@@ -129,19 +132,21 @@ def splitMessage(bot, update):
     '''
         
     if message_text == "n" or message_text == "N":
-        if not segments:
+        userfind = find_user(users, update.message.from_user.id)
+        
+        if not userfind.segments:
             update.message.reply_text("Nothing to show")
             return
     
-        update.message.reply_text(segments[0])
-        segments.remove(segments[0])
+        update.message.reply_text(userfind.segments[0])
+        userfind.segments.remove(userfind.segments[0])
         return
     
 
     else:      
         ##del segments[:]
-        user = find(update.message.from_user.id)
-        split_reading(y, segments)
+        userfind = find(users, update.message.from_user.id)
+        split_reading(message_text, userfind.segments)
         
 
 
