@@ -27,9 +27,9 @@ segments = []
 dueDates = []
 
 class user:
-    def __init__(self,chat_id):
+    def __init__(self,user_id):
         self.segments = []
-        self.chat_id = chat_id
+        self.user_id = user_id
     def addSegments(self,list):
         for i in list:
             self.segments.append(i)
@@ -95,7 +95,7 @@ def splitMessage(bot, update):
         chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
         # drop blank lines
         text = '\n'.join(chunk for chunk in chunks if chunk)
-        
+        user = find(update.message.from_user.id)
         split(text)
         update.message.reply_text("Webpage Read. Press n to flip through pages")
         return
