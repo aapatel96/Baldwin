@@ -33,7 +33,7 @@ def help(bot, update):
 def echo(bot, update):
 
 
-        update.message.reply_text(update.message.text + "yo")
+        update.message.reply_text(update.message.text)
 
 
     
@@ -43,7 +43,7 @@ def error(bot, update, error):
 
 def main():
     # Create the EventHandler and pass it your bot's token.
-    updater = Updater("297497718:AAFEZdRe7tbkt6z2Brb4tepPPCn5uNkrLlA")
+    updater = Updater("280514685:AAFHrtqjOaXPDhQZ6pFGYDD0N1mt6AcbqzY")
 
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
