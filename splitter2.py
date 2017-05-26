@@ -372,7 +372,7 @@ def main():
     # on different commands - answer in Telegram
     dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("help", help))
-    dp.add_handler(CommandHandler("next", send_message_from_button))
+    dp.add_handler(RegexHandler("^next$", send_message_from_button))
     dp.add_handler(MessageHandler(Filters.document, splitPDF))
     dp.add_handler(CommandHandler("firstlast",first_last, pass_args = True))
 
