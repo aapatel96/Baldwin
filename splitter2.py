@@ -24,6 +24,7 @@ import PyPDF2
 import nltk
 import requests
 import shutil
+import re
 
 #from pdf2text import Extractor
 
@@ -81,7 +82,10 @@ def find_user(users, user_id):
 
     return None
 
-    
+def cleanhtml(raw_html):
+  cleanr = re.compile('<.*?>')
+  cleantext = re.sub(cleanr, '', raw_html)
+  return cleantext   
     
 def send_message_from_queue(bot, job):
     """
@@ -169,6 +173,10 @@ def splitPDF(bot, update):
 # update. Error handlers also receive the raised TelegramError object in error.
 
 def process_message(bot, update, job_queue):
+    userfind = find_user(users,update.message.from_user.id)
+    if userfind == None:
+        update.message.reply_text("Please type /start and then resend url/text")
+        return
     message_text = update.message.text.encode('utf-8')
     if message_text[0:4] == "http":
         webpage = urllib2.urlopen(message_text)
@@ -203,29 +211,29 @@ def process_message(bot, update, job_queue):
                 pass
 
 ##            
-        '''
-        lines = (line.strip() for line in text.splitlines())
+
+        lines = (line.strip() for line in p_tags_double_pure)
         # break multi-headlines into a line each
         chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
         # drop blank lines
         text = '\n'.join(chunk for chunk in chunks if chunk)
-        '''
-        userfind = find_user(users,update.message.from_user.id)
-        if userfind == None:
-            update.message.reply_text("Please type /start and then resend url/text")
-            return
-#       split_reading(text, userfind.segments)
+        print type(text)
 
 
-##       
+        
+
+        
+##        split_reading(text, userfind.segments)
+
+
+       
         for i in xrange(0,len(p_tags_double_pure),2):
-
             if (len(p_tags_double_pure))%2 == 1 and i == len(p_tags_double_pure)-1:
-                userfind.segments.append(p_tags_double_pure[i])
-                continue
-            
-            userfind.segments.append(p_tags_double_pure[i] +"\n"+"\n"+ p_tags_double_pure[i+1])
+                segment = cleanhtml(p_tags_double_pure[i])
+            else:
+                segment = cleanhtml(p_tags_double_pure[i] +"\n"+"\n"+ p_tags_double_pure[i+1])
 
+            userfind.segments.append(segment)
 ##
         update.message.reply_text("Webpage Read. Press n to flip through pages",reply_markup=flip_keyboard)
 
