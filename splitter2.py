@@ -12,7 +12,7 @@ Have to change the set function to new reading Function so that you give /newRea
 and it splits the readings and starts sending messages
 '''
 
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Job, JobQueue
+from telegram.ext import Updater, CommandHandler, RegexHandler, MessageHandler, Filters, Job, JobQueue
 import telegram.replykeyboardmarkup
 import telegram.keyboardbutton
 import logging
