@@ -360,7 +360,9 @@ def error(bot, update, error):
 
 def main():
     # Create the EventHandler and pass it your bot's token.
-    updater = Updater("280514685:AAFHrtqjOaXPDhQZ6pFGYDD0N1mt6AcbqzY")
+    TOKEN = '280514685:AAFHrtqjOaXPDhQZ6pFGYDD0N1mt6AcbqzY'
+    PORT = int(os.environ.get('PORT', '5000'))
+    updater = Updater(TOKEN)
     # job_q= updater.job_queue
 
     # Get the dispatcher to register handlers
@@ -382,9 +384,13 @@ def main():
 
     # log all errors
     dp.add_error_handler(error)
-
+    
+    updater.start_webhook(listen="0.0.0.0",
+                      port=PORT,
+                      url_path=TOKEN)
+    updater.bot.set_webhook("https://warm-oasis-63405.herokuapp.com/" + TOKEN)
     # Start the Bot
-    updater.start_polling()
+    #updater.start_polling()
 
     # Run the bot until the you presses Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
