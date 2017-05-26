@@ -21,7 +21,6 @@ from bs4 import BeautifulSoup
 import urllib2
 import requests
 import PyPDF2
-import nltk
 import requests
 import shutil
 import re

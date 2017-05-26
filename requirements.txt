@@ -1,4 +1,3 @@
 python-telegram-bot
 logging
-nltk
 bs4
