@@ -33,7 +33,7 @@ from HTMLParser import HTMLParser
 
 
 
-flip_keyboard = telegram.replykeyboardmarkup.ReplyKeyboardMarkup([[telegram.KeyboardButton("/next")]], resize_keyboard=True)
+flip_keyboard = telegram.replykeyboardmarkup.ReplyKeyboardMarkup([[telegram.KeyboardButton("next")]], resize_keyboard=True)
 users = []
 segments = []
 dueDates = []
