@@ -3,4 +3,3 @@ logging
 requests
 bs4
 PyPDF2
-os
