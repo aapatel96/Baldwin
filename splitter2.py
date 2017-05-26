@@ -304,9 +304,8 @@ def first_last(bot,update, args):
     p_tags_double_pure = []
     for k in p_tags_pure:
         try:
-            textToAppend = k[3:-4]
+            textToAppend = cleanhtml(k[3:-4])
             p_tags_double_pure.append(textToAppend)
-
         except:
             pass
     #print "removed <p>"
