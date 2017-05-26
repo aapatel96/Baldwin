@@ -24,6 +24,7 @@ import PyPDF2
 import requests
 import shutil
 import re
+import os
 
 #from pdf2text import Extractor
 
