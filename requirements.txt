@@ -2,3 +2,4 @@ python-telegram-bot
 logging
 requests
 bs4
+PyPDF2
