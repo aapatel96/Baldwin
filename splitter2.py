@@ -31,9 +31,12 @@ import os
 
 from HTMLParser import HTMLParser
 
-
+CHOOSING, DUMMY == range(2)
 
 flip_keyboard = telegram.replykeyboardmarkup.ReplyKeyboardMarkup([[telegram.KeyboardButton("next")]], resize_keyboard=True)
+choosing_keyboard = telegram.replykeyboardmarkup.ReplyKeyboardMarkup([[telegram.KeyboardButton("summary")],[telegram.KeyboardButton("full")]], resize_keyboard=True)
+
+
 users = []
 segments = []
 dueDates = []
@@ -49,6 +52,7 @@ class user:
         self.segments = []
         self.times = []
         self.user_id = user_id
+        self.currentLink = ""
     def addSegments(self,list):
         for i in list:
             self.segments.append(i)
@@ -167,7 +171,13 @@ def splitPDF(bot, update):
     pageObj = pdfReader.getPage(0)
     print pageObj.extractText()
     
-
+def askMode (bot,update):
+    userfind = find_user(users,update.message.from_user.id)
+    if userfind == None:
+        update.message.reply_text("Please type /start and then resend url/text")
+        return
+    update.message.reply_text("do you want a summary or the full article?",reply_markup=choosing_keyboard)
+    return CHOOSING
 
 # Define a few command handlers. These usually take the two arguments bot and
 # update. Error handlers also receive the raised TelegramError object in error.
@@ -178,6 +188,8 @@ def process_message(bot, update, job_queue):
         update.message.reply_text("Please type /start and then resend url/text")
         return
     message_text = update.message.text.encode('utf-8')
+
+    if message
     if message_text[0:4] == "http":
         webpage = urllib2.urlopen(message_text)
         html = webpage.read()
@@ -378,8 +390,24 @@ def main():
     
 
     # on noncommand i.e message - echo the message on Telegram
-    dp.add_handler(MessageHandler([Filters.text], process_message, pass_job_queue=True))
+    # dp.add_handler(MessageHandler(Filters.text, process_message, pass_job_queue=True))
 
+
+    add_article = ConversationHandler(
+    entry_points=[MessageHandler(Filters.text, askmode, pass_job_queue=True)],
+    states={
+
+
+        CHOOSING: [RegexHandler('^full$',passf),RegexHandler('^summary$',passf)],
+        
+        DUMMY: [RegexHandler('^cancel$', cancel),                        
+                ],     
+    },
+
+    fallbacks=[RegexHandler('^cancel$', cancel)]
+    )
+
+    dp.add_handler(add_article)
     
 
     # log all errors
