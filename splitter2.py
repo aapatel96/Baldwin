@@ -256,7 +256,7 @@ def process_message(bot, update, job_queue):
 ##
         update.message.reply_text("Webpage Read. Press n to flip through pages",reply_markup=flip_keyboard)
 
-        for i in xrange(len(userfind.segments)):
+        for i in xrange(1,len(userfind.segments)):
             segment_alarm = Job(send_message_from_queue,
                                 i*7*60,
                                 repeat=False,
@@ -397,7 +397,7 @@ def main():
     
 
     # on noncommand i.e message - echo the message on Telegram
-    # dp.add_handler(MessageHandler(Filters.text, process_message, pass_job_queue=True))
+    dp.add_handler(MessageHandler(Filters.text, process_message, pass_job_queue=True))
 
     '''
 
@@ -418,16 +418,17 @@ def main():
     dp.add_handler(add_article)
     
     '''
-    
+
     # log all errors
     dp.add_error_handler(error)
-    
+
     updater.start_webhook(listen="0.0.0.0",
                       port=PORT,
                       url_path=TOKEN)
     updater.bot.set_webhook("https://baldwin-reader.herokuapp.com/" + TOKEN)
+
     # Start the Bot
-##    updater.start_polling()
+    #updater.start_polling()
 
     # Run the bot until the you presses Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
