@@ -12,7 +12,7 @@ Have to change the set function to new reading Function so that you give /newRea
 and it splits the readings and starts sending messages
 '''
 
-from telegram.ext import Updater, CommandHandler, RegexHandler, MessageHandler, Filters, Job, JobQueue
+from telegram.ext import Updater, CommandHandler, RegexHandler, MessageHandler, Filters, Job, JobQueue, ConversationHandler
 import telegram.replykeyboardmarkup
 import telegram.keyboardbutton
 import logging
@@ -31,7 +31,7 @@ import os
 
 from HTMLParser import HTMLParser
 
-CHOOSING, DUMMY == range(2)
+CHOOSING,DUMMY = range(2)
 
 flip_keyboard = telegram.replykeyboardmarkup.ReplyKeyboardMarkup([[telegram.KeyboardButton("next")]], resize_keyboard=True)
 choosing_keyboard = telegram.replykeyboardmarkup.ReplyKeyboardMarkup([[telegram.KeyboardButton("summary")],[telegram.KeyboardButton("full")]], resize_keyboard=True)
@@ -154,7 +154,6 @@ def split_reading(reading, output):
 
 
 def splitPDF(bot, update):
-    print start
     file_id= update.message.document.file_id
     url = bot.getFile(file_id).file_path
     print url
@@ -179,6 +178,16 @@ def askMode (bot,update):
     update.message.reply_text("do you want a summary or the full article?",reply_markup=choosing_keyboard)
     return CHOOSING
 
+def full(bot,update):
+    userfind = find_user(users,update.message.from_user.id)
+    if userfind == None:
+        update.message.reply_text("Please type /start and then resend url/text")
+        return
+    update.message.reply_text(userfind.segments[0],parse_mode="HTML", reply_markup=flip_keyboard)
+    userfind.segments.remove(userfind.segments[0])
+    return ConversationHandler.END
+
+
 # Define a few command handlers. These usually take the two arguments bot and
 # update. Error handlers also receive the raised TelegramError object in error.
 
@@ -188,8 +197,6 @@ def process_message(bot, update, job_queue):
         update.message.reply_text("Please type /start and then resend url/text")
         return
     message_text = update.message.text.encode('utf-8')
-
-    if message
     if message_text[0:4] == "http":
         webpage = urllib2.urlopen(message_text)
         html = webpage.read()
@@ -394,7 +401,7 @@ def main():
 
 
     add_article = ConversationHandler(
-    entry_points=[MessageHandler(Filters.text, askmode, pass_job_queue=True)],
+    entry_points=[MessageHandler(Filters.text, askMode, pass_job_queue=True)],
     states={
 
 
@@ -413,12 +420,12 @@ def main():
     # log all errors
     dp.add_error_handler(error)
     
-    updater.start_webhook(listen="0.0.0.0",
-                      port=PORT,
-                      url_path=TOKEN)
-    updater.bot.set_webhook("https://baldwin-reader.herokuapp.com/" + TOKEN)
+##    updater.start_webhook(listen="0.0.0.0",
+##                      port=PORT,
+##                      url_path=TOKEN)
+##    updater.bot.set_webhook("https://baldwin-reader.herokuapp.com/" + TOKEN)
     # Start the Bot
-    #updater.start_polling()
+    updater.start_polling()
 
     # Run the bot until the you presses Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
