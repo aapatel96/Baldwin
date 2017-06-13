@@ -62,7 +62,7 @@ class user:
 
 def start(bot, update):
     update.message.reply_text('Hi!')
-    update.message.reply_text('Send me a link and I will')
+    update.message.reply_text('Send me a link and you can read it in telegram')
     users.append(user(update.message.from_user.id))   
     
 def help(bot, update):
