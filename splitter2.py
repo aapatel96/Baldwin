@@ -399,6 +399,7 @@ def main():
     # on noncommand i.e message - echo the message on Telegram
     # dp.add_handler(MessageHandler(Filters.text, process_message, pass_job_queue=True))
 
+    '''
 
     add_article = ConversationHandler(
     entry_points=[MessageHandler(Filters.text, askMode, pass_job_queue=True)],
@@ -416,7 +417,8 @@ def main():
 
     dp.add_handler(add_article)
     
-
+    '''
+    
     # log all errors
     dp.add_error_handler(error)
     
