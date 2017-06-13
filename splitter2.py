@@ -299,79 +299,6 @@ def process_message(bot, update, job_queue):
     '''
 
 
-def first_last(bot,update, args):
-    message_text = args[0].encode('utf-8')
-    webpage = urllib2.urlopen(message_text)
-    html = webpage.read()
-    soup = BeautifulSoup(html, 'html.parser')
-    for script in soup(["script", "style"]):
-        script.extract()
-
-    
-
-#       text = soup.get_text()
-
-##      invert comments between ##'s and switch #'s off for old way only with #'s at left most space
-    text = soup.find_all('p')
-    p_tags = []
-    for i in text:
-        p_tags.append(str(i))
-    p_tags_pure = []
-    for j in p_tags:
-        if j[0:3] =="<p>":
-            p_tags_pure.append(j)
-    p_tags_double_pure = []
-    for k in p_tags_pure:
-        try:
-            textToAppend = cleanhtml(k[3:-4])
-            p_tags_double_pure.append(textToAppend)
-        except:
-            pass
-    #print "removed <p>"
-    summary= [p_tags_double_pure[0]]
-    #print "created list to store the segments of the summary"
-    end_index = len(p_tags_double_pure)-1
-    #print "end index is calculated as all but the last one"
-    for l in xrange(1,end_index):
-        #print "looping over " + str(l) + " p_tag"
-        para = p_tags_double_pure[l]
-        #print "pulling element at index " + str(l) + " of p_tags"
-        para_sentences = para.split('.')
-        #print "splitting element by sentence"
-        if len(para_sentences)==1:
-            summary.append(para_sentences[0])
-            continue
-        #print "para has more than one sentence"
-        summary.append(para_sentences[0])
-        
-        summary.append(para_sentences[-1])
-        #print "appending first and last sentences of para"
-
-    #print "out of loop"
-    summary.append(p_tags_double_pure[-1])
-    userfind = find_user(users, update.message.from_user.id)
-    if userfind == None:
-        update.message.reply_text("Please type /start and then resend command")
-        return
-    for i in summary:
-        if len(i) <=3:
-            continue
-        userfind.segments.append(i)
-
-    update.message.reply_text("Press /next to flip through- NO JOB QUEUE SET... this is a summary BC read it or die",reply_markup=flip_keyboard)
-        
-        
-    
-        
-##            
-    '''
-    lines = (line.strip() for line in text.splitlines())
-    # break multi-headlines into a line each
-    chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
-    # drop blank lines
-    text = '\n'.join(chunk for chunk in chunks if chunk)
-    '''
-    
  
 def error(bot, update, error):
     logger.warn('Update "%s" caused error "%s"' % (update, error))
@@ -392,7 +319,6 @@ def main():
     dp.add_handler(CommandHandler("help", help))
     dp.add_handler(RegexHandler("^next$", send_message_from_button))
     dp.add_handler(MessageHandler(Filters.document, splitPDF))
-    dp.add_handler(CommandHandler("firstlast",first_last, pass_args = True))
 
     
 
